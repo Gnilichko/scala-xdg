@@ -6,8 +6,8 @@ standards defined by [freedesktop.org][xdg] (formerly X Desktop Group).
 ## Sub-Projects
 
 This project is organized in several sub-projects which are described in the following sections.
-These sub-projects can be included as a dependency using [SBT][sbt] by adding `"org.freedesktop" %%
-"<sub-project-name>" % "<tagged-version>"` to the build definition.
+These sub-projects can be included as a dependency using [SBT][sbt] by adding
+`"org.freedesktop" %% "<sub-project-name>" % "<tagged-version>"` to the build definition.
 
 ### [XDG Base Directory Specification][basedir]
 
