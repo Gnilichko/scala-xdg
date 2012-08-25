@@ -21,6 +21,8 @@ package basedir
 import java.io.File._
 import util.Properties._
 
+import XDGBaseDirEnvironment._
+
 /** $BaseDirInfo */
 object XDGBaseDirs extends XDGBaseDirs
 
@@ -32,7 +34,13 @@ object XDGBaseDirs extends XDGBaseDirs
   *
   * @define UnsetEnvVar Should the related environment variable be unset
   */
-trait XDGBaseDirs extends XDGBaseDirEnvironment {
+trait XDGBaseDirs {
+
+  private[basedir] val noEndSep = (path: String) ⇒
+    if (path.endsWith(separator)) path.dropRight(1) else path
+
+  private[basedir] def pathOrElse(name: String, alt: String): String =
+    envOrNone(name) map noEndSep getOrElse alt
 
   // -----------------------------------------------------------------------------------------------
   // user-specific base directories
@@ -42,34 +50,34 @@ trait XDGBaseDirs extends XDGBaseDirEnvironment {
     *
     * $UnsetEnvVar, `userHome + separator + ".cache"` is chosen as the default.
     *
-    * @see [[XDG_CACHE_HOME]]
+    * @see [[XDGBaseDirEnvironment.XDG_CACHE_HOME]]
     */
-  def xdgCacheHome = envOrElse(XDG_CACHE_HOME, userHome + separator + ".cache")
+  def xdgCacheHome = pathOrElse(XDG_CACHE_HOME, userHome + separator + ".cache")
 
   /** Returns the base directory for user-specific configuration files.
     *
     * $UnsetEnvVar, `userHome + separator + ".config"` is chosen as the default.
     *
-    * @see [[XDG_CONFIG_HOME]]
+    * @see [[XDGBaseDirEnvironment.XDG_CONFIG_HOME]]
     */
-  def xdgConfigHome = envOrElse(XDG_CONFIG_HOME, userHome + separator + ".config")
+  def xdgConfigHome = pathOrElse(XDG_CONFIG_HOME, userHome + separator + ".config")
 
   /** Returns the base directory for user-specific data files.
     *
     * $UnsetEnvVar, `userHome + separator + ".local" + separator + "share"` is chosen as the
     * default.
     *
-    * @see [[XDG_DATA_HOME]]
+    * @see [[XDGBaseDirEnvironment.XDG_DATA_HOME]]
     */
-  def xdgDataHome = envOrElse(XDG_DATA_HOME, userHome + separator + ".local" + separator + "share")
+  def xdgDataHome = pathOrElse(XDG_DATA_HOME, userHome + separator + ".local" + separator + "share")
 
   /** Returns the base directory for user-specific runtime files and other file objects.
     *
     * $UnsetEnvVar, `tmpDir + separator + userName` is chosen as the default.
     *
-    * @see [[XDG_RUNTIME_DIR]]
+    * @see [[XDGBaseDirEnvironment.XDG_RUNTIME_DIR]]
     */
-  def xdgRuntimeDir = envOrElse(XDG_RUNTIME_DIR, tmpDir + separator + userName)
+  def xdgRuntimeDir = pathOrElse(XDG_RUNTIME_DIR, tmpDir + separator + userName)
 
   // -----------------------------------------------------------------------------------------------
   // preference ordered (global) base directories
@@ -80,10 +88,10 @@ trait XDGBaseDirs extends XDGBaseDirEnvironment {
     *
     * $UnsetEnvVar, `Seq("/etc/xdg", "/etc")` is chosen as the default.
     *
-    * @see [[XDG_CONFIG_DIRS]]
+    * @see [[XDGBaseDirEnvironment.XDG_CONFIG_DIRS]]
     */
   def xdgGlobalConfigDirs: Seq[String] = envOrNone(XDG_CONFIG_DIRS) map {
-    _.split(pathSeparator).toSeq.distinct
+    _.split(pathSeparator).toSeq.distinct map noEndSep
   } getOrElse {
     Seq("/etc/xdg", "/etc")
   }
@@ -93,10 +101,10 @@ trait XDGBaseDirs extends XDGBaseDirEnvironment {
     *
     * $UnsetEnvVar, `Seq("/usr/local/share", "/usr/share")` is chosen as the default.
     *
-    * @see [[XDG_DATA_DIRS]]
+    * @see [[XDGBaseDirEnvironment.XDG_DATA_DIRS]]
     */
   def xdgGlobalDataDirs: Seq[String] = envOrNone(XDG_DATA_DIRS) map {
-    _.split(pathSeparator).toSeq.distinct
+    _.split(pathSeparator).toSeq.distinct map noEndSep
   } getOrElse {
     Seq("/usr/local/share", "/usr/share")
   }
