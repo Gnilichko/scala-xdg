@@ -1,4 +1,4 @@
-# Scala Library for Access to [freedesktop.org][xdg] Standards
+# Access to [freedesktop.org][xdg] Standards for [Scala][scala]
 
 `scala-xdg` is a set of libraries for the programming language [Scala][scala] to access the
 standards defined by [freedesktop.org][xdg] (formerly X Desktop Group).
