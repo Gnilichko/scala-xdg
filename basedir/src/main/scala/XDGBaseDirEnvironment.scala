@@ -15,21 +15,15 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-package org.freedesktop.basedir
+package org.freedesktop
+package basedir
 
-/** Contains the names of XDG Base Directory Specification related environment variables. This
-  * object provides static access to these entities.
-  *
-  * The original documentation of these environment variables is located at the
-  * [[http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html XDG Base Directory
-  * Specification]].
-  */
+/** $BaseDirEnvironmentInfo */
 object XDGBaseDirEnvironment extends XDGBaseDirEnvironment
 
-/** Contains the names of XDG Base Directory Specification related environment variables. This trait
-  * provides access to these entities for mixin composition.
+/** $BaseDirEnvironmentInfo
   *
-  * The original documentation of these environment variables is located at the
+  * @define BaseDirEnvironmentInfo Contains the names of the environment variables of the
   * [[http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html XDG Base Directory
   * Specification]].
   */
@@ -68,7 +62,7 @@ trait XDGBaseDirEnvironment {
     */
   val XDG_CONFIG_DIRS = "XDG_CONFIG_DIRS"
 
-  /** Returns the name of the environment variable that defines the set of preference ordered base
+  /** Returns the name of the environment variable that defines the preference ordered base
     * directories relative to which data files are searched.
     */
   val XDG_DATA_DIRS = "XDG_DATA_DIRS"

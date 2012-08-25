@@ -15,24 +15,22 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-package org.freedesktop.basedir
+package org.freedesktop
+package basedir
 
 import java.io.File._
 import util.Properties._
 
-/** Provides static access to the XDG base directories.
-  *
-  * The original documentation of these directories and their default values is located at the
-  * [[http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html XDG Base Directory
-  * Specification]].
-  */
+/** $BaseDirInfo */
 object XDGBaseDirs extends XDGBaseDirs
 
-/** Provides access to the XDG base directories for mixin composition.
+/** $BaseDirInfo
   *
-  * The original documentation of these directories and their default values is located at the
+  * @define BaseDirInfo Provides access to the base directories of the
   * [[http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html XDG Base Directory
   * Specification]].
+  *
+  * @define UnsetEnvVar Should the related environment variable be unset
   */
 trait XDGBaseDirs extends XDGBaseDirEnvironment {
 
@@ -40,31 +38,36 @@ trait XDGBaseDirs extends XDGBaseDirEnvironment {
   // user-specific base directories
   // -----------------------------------------------------------------------------------------------
 
-  /** Returns the absolute path to the base directory for user-specific non-essential (cached) data.
+  /** Returns the base directory for user-specific non-essential (cached) data.
     *
-    * Should the related environment variable not be set, `userHome + separator + ".cache"` is
-    * chosen as the default.
+    * $UnsetEnvVar, `userHome + separator + ".cache"` is chosen as the default.
+    *
+    * @see [[XDG_CACHE_HOME]]
     */
   def xdgCacheHome = envOrElse(XDG_CACHE_HOME, userHome + separator + ".cache")
 
-  /** Returns the absolute path of the base directory for user-specific configuration files.
+  /** Returns the base directory for user-specific configuration files.
     *
-    * Should the related environment variable not be set, `userHome + separator + ".config"` is
-    * chosen as the default.
+    * $UnsetEnvVar, `userHome + separator + ".config"` is chosen as the default.
+    *
+    * @see [[XDG_CONFIG_HOME]]
     */
   def xdgConfigHome = envOrElse(XDG_CONFIG_HOME, userHome + separator + ".config")
 
-  /** Returns the absolute path of the base directory for user-specific data files.
+  /** Returns the base directory for user-specific data files.
     *
-    * Should the related environment variable not be set, `userHome + separator + ".local" +
-    * separator + "share"` is chosen as the default.
+    * $UnsetEnvVar, `userHome + separator + ".local" + separator + "share"` is chosen as the
+    * default.
+    *
+    * @see [[XDG_DATA_HOME]]
     */
   def xdgDataHome = envOrElse(XDG_DATA_HOME, userHome + separator + ".local" + separator + "share")
 
   /** Returns the base directory for user-specific runtime files and other file objects.
     *
-    * Should the related environment variable not be set, `tmpDir + separator + userName` is chosen
-    * as the default.
+    * $UnsetEnvVar, `tmpDir + separator + userName` is chosen as the default.
+    *
+    * @see [[XDG_RUNTIME_DIR]]
     */
   def xdgRuntimeDir = envOrElse(XDG_RUNTIME_DIR, tmpDir + separator + userName)
 
@@ -72,42 +75,44 @@ trait XDGBaseDirs extends XDGBaseDirEnvironment {
   // preference ordered (global) base directories
   // -----------------------------------------------------------------------------------------------
 
-  /** Returns the distinct global preference ordered base directories relative to which
+  /** Returns the distinct, global, preference ordered base directories relative to which
     * configuration files are searched.
     *
-    * Should the related environment variable not be set, `List("/etc/xdg", "/etc")` is chosen as
-    * the default.
+    * $UnsetEnvVar, `Seq("/etc/xdg", "/etc")` is chosen as the default.
+    *
+    * @see [[XDG_CONFIG_DIRS]]
     */
-  def xdgGlobalConfigDirs: List[String] = envOrNone(XDG_CONFIG_DIRS) map {
-    _.split(pathSeparator).toList.distinct
+  def xdgGlobalConfigDirs: Seq[String] = envOrNone(XDG_CONFIG_DIRS) map {
+    _.split(pathSeparator).toSeq.distinct
   } getOrElse {
-    List("/etc/xdg", "/etc")
+    Seq("/etc/xdg", "/etc")
   }
 
-  /** Returns the distinct global preference ordered base directories relative to which data files
+  /** Returns the distinct, global, preference ordered base directories relative to which data files
     * are searched.
     *
-    * Should the related environment variable not be set, `List("/usr/local/share", "/usr/share")`
-    * is chosen as the default.
+    * $UnsetEnvVar, `Seq("/usr/local/share", "/usr/share")` is chosen as the default.
+    *
+    * @see [[XDG_DATA_DIRS]]
     */
-  def xdgGlobalDataDirs: List[String] = envOrNone(XDG_DATA_DIRS) map {
-    _.split(pathSeparator).toList.distinct
+  def xdgGlobalDataDirs: Seq[String] = envOrNone(XDG_DATA_DIRS) map {
+    _.split(pathSeparator).toSeq.distinct
   } getOrElse {
-    List("/usr/local/share", "/usr/share")
+    Seq("/usr/local/share", "/usr/share")
   }
 
   // -----------------------------------------------------------------------------------------------
   // preference ordered base directories (including user-specific)
   // -----------------------------------------------------------------------------------------------
 
-  /** Returns the distinct preference ordered base directories relative to which configuration files
-    * are searched.
+  /** Returns the distinct, preference ordered base directories relative to which configuration
+    * files are searched.
     */
-  def xdgConfigDirs: List[String] = (xdgConfigHome :: xdgGlobalConfigDirs).distinct
+  def xdgConfigDirs: Seq[String] = (xdgConfigHome +: xdgGlobalConfigDirs).distinct
 
-  /** Returns the distinct preference ordered base directories relative to which data files are
+  /** Returns the distinct, preference ordered base directories relative to which data files are
     * searched.
     */
-  def xdgDataDirs: List[String] = (xdgDataHome :: xdgGlobalDataDirs).distinct
+  def xdgDataDirs: Seq[String] = (xdgDataHome +: xdgGlobalDataDirs).distinct
 
 }
