@@ -18,36 +18,56 @@
 import sbt._
 import Keys._
 
-object Settings {
-  lazy val base = Defaults.defaultSettings ++ Seq (
-    organization        := "org.freedesktop",
-    version             := "0.1.0-SNAPSHOT",
-    scalaVersion        := "2.9.2",
-    crossScalaVersions  := Seq (
+object ScalaXDG extends Build {
+
+  // -----------------------------------------------------------------------------------------------
+  // settings
+  // -----------------------------------------------------------------------------------------------
+
+  lazy val projectInfo = Seq (
+    description          := "Access to freedesktop.org Standards for Scala",
+    homepage             := Some(url("https://github.com/wookietreiber/scala-xdg")),
+    organization         := "org.freedesktop",
+    organizationName     := "org.freedesktop",
+    organizationHomepage := Some(url("http://www.freedesktop.org/")),
+    startYear            := Some(2012),
+    licenses             := Seq("WTFPL" → url("http://sam.zoy.org/wtfpl/COPYING")),
+    scmInfo              := Some(ScmInfo(
+      url("https://github.com/wookietreiber/scala-xdg"),
+      "scm:git:git://github.com/wookietreiber/scala-xdg.git",
+      Some("scm:git:https://github.com/wookietreiber/scala-xdg.git")
+    ))
+  )
+
+  lazy val baseSettings = Defaults.defaultSettings ++ projectInfo ++ Seq (
+    version              := "0.1.0-SNAPSHOT",
+    scalaVersion         := "2.10.0-M7",
+    crossScalaVersions   := Seq (
       "2.8.0", "2.8.1", "2.8.2",
       "2.9.0", "2.9.0-1", "2.9.1", "2.9.1-1", "2.9.2",
-      "2.10.0-M4"
+      "2.10.0-M7"
     ),
     initialCommands in (Compile, consoleQuick) <<= initialCommands in Compile,
     initialCommands in Compile in console += """
       import org.freedesktop._
     """
   )
-}
 
-object ScalaXDG extends Build {
+  // -----------------------------------------------------------------------------------------------
+  // projects
+  // -----------------------------------------------------------------------------------------------
 
   lazy val root = Project (
     id        = "scala-xdg",
     base      = file("."),
     aggregate = Seq ( basedir ),
-    settings  = Settings.base
+    settings  = baseSettings
   )
 
   lazy val basedir = Project (
     id        = "scala-xdg-basedir",
     base      = file("basedir"),
-    settings  = Settings.base ++ Seq (
+    settings  = baseSettings ++ Seq (
       initialCommands in Compile in console += """
         import org.freedesktop.basedir._
       """
