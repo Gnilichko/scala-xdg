@@ -41,11 +41,11 @@ object ScalaXDG extends Build {
 
   lazy val baseSettings = Defaults.defaultSettings ++ projectInfo ++ Seq (
     version              := "0.1.0-SNAPSHOT",
-    scalaVersion         := "2.10.0-M7",
+    scalaVersion         := "2.10.0-RC1",
     crossScalaVersions   := Seq (
       "2.8.0", "2.8.1", "2.8.2",
       "2.9.0", "2.9.0-1", "2.9.1", "2.9.1-1", "2.9.2",
-      "2.10.0-M7"
+      "2.10.0-RC1"
     ),
     initialCommands in (Compile, consoleQuick) <<= initialCommands in Compile,
     initialCommands in Compile in console += """
