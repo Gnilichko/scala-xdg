@@ -21,3 +21,8 @@ Specification][basedir].
 [sbt]: http://www.scala-sbt.org/
 [basedir]: http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
 
+
+---
+
+[![endorse](http://api.coderwall.com/wookietreiber/endorsecount.png)](http://coderwall.com/wookietreiber)
+
