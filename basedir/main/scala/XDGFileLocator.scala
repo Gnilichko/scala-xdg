@@ -49,6 +49,14 @@ trait XDGFileLocator {
   private[basedir] def locate(bases: Seq[String], app: String, sub: Seq[String]): Option[String] =
     existingPaths(bases, app, sub).headOption
 
+  /** Locates a cache file
+    *
+    * @param app $AppInfo
+    * @param sub $SubInfo
+    */
+  def locateCache(app: String, sub: String*): Option[String] =
+    locate(Seq(xdgCacheHome), app, sub)
+
   /** Locates the precedented configuration file.
     *
     * @param app $AppInfo
